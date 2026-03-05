@@ -4,6 +4,7 @@ import com.grepp.jms.greppstudy.product.domain.Product;
 import com.grepp.jms.greppstudy.product.dto.ProductRequest;
 import com.grepp.jms.greppstudy.product.dto.ProductResponse;
 import com.grepp.jms.greppstudy.product.repo.ProductRepo;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(UUID id) {
-        return null;
+        return productRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
 
     @Override
     public void deleteById(UUID id) {
-
+        productRepo.deleteById(id);
     }
 
     @Override
@@ -53,5 +55,12 @@ public class ProductServiceImpl implements ProductService {
     private ProductResponse ofProduct(Product product) {
         return new ProductResponse(product.getId(), product.getPrice(), product.getStocks(), product.getStatus(),
                 product.getModifyDate());
+    }
+
+    @Override
+    public Product update(UUID id, ProductRequest request) {
+        Product product = findById(id);
+        product.update(request.name(), request.price(), request.stock(), request.status(), LocalDateTime.now());
+        return productRepo.save(product);
     }
 }

@@ -15,6 +15,6 @@ public interface ProductService {
 
     ProductResponse create(ProductRequest request);
 
-
+    Product update(UUID id, ProductRequest request);
 
 }

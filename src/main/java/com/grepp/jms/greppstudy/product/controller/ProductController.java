@@ -5,12 +5,13 @@ import com.grepp.jms.greppstudy.product.dto.ProductRequest;
 import com.grepp.jms.greppstudy.product.dto.ProductResponse;
 import com.grepp.jms.greppstudy.product.service.ProductService;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,16 +31,18 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> findAll() {
-
+    public ResponseEntity<List<Product>> findAll() {
+        return ResponseEntity.ok(productService.findAll());
     }
 
 
-    @PutMapping
-    public Product update(@RequestBody Product product) {
-
+    @PutMapping("/{productId}")
+    public ResponseEntity<Product> update(@PathVariable String productId, @RequestBody ProductRequest request) {
+        return ResponseEntity.ok(productService.update(UUID.fromString(productId), request));
     }
-    @DeleteMapping
-    public void delete(@RequestBody Product product) {
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> delete(@PathVariable String productId) {
+        productService.deleteById(UUID.fromString(productId));
+        return ResponseEntity.noContent().build();
     }
 }
