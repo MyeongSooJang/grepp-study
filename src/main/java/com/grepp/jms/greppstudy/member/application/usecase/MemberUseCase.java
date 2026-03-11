@@ -1,9 +1,12 @@
 package com.grepp.jms.greppstudy.member.application.usecase;
 
+import com.grepp.jms.greppstudy.member.application.dto.TokenResponse;
 import com.grepp.jms.greppstudy.member.presentation.dto.request.LoginRequest;
 import com.grepp.jms.greppstudy.member.presentation.dto.request.MemberEnrollRequest;
 import com.grepp.jms.greppstudy.member.presentation.dto.res.MemberAdminResponse;
 import com.grepp.jms.greppstudy.member.presentation.dto.res.MemberResponse;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 public interface MemberUseCase {
@@ -12,5 +15,5 @@ public interface MemberUseCase {
 
     MemberResponse save(MemberEnrollRequest memberEnrollRequest);
 
-    Boolean login(LoginRequest login);
+    TokenResponse login(LoginRequest login) throws NoSuchAlgorithmException, InvalidKeySpecException;
 }

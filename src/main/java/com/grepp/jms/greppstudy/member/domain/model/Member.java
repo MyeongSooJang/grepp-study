@@ -32,7 +32,7 @@ public class Member {
     @Column(nullable = false, length = 100)
     private String address;
     @Schema(description = "유저상태")
-    @Column(name = "\"status\"", length = 5)
+    @Column(name = "\"status\"", length = 10)
     private String status;
 
     @Column(name = "reg_id", nullable = false)

@@ -1,11 +1,14 @@
 package com.grepp.jms.greppstudy.member.presentation.controller;
 
+import com.grepp.jms.greppstudy.member.application.dto.TokenResponse;
 import com.grepp.jms.greppstudy.member.application.usecase.MemberUseCase;
 import com.grepp.jms.greppstudy.member.presentation.dto.request.LoginRequest;
 import com.grepp.jms.greppstudy.member.presentation.dto.request.MemberEnrollRequest;
 import com.grepp.jms.greppstudy.member.presentation.dto.res.MemberAdminResponse;
 import com.grepp.jms.greppstudy.member.presentation.dto.res.MemberResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,7 +39,11 @@ public class MemberController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<Boolean> login(@RequestBody LoginRequest login){
-        return ResponseEntity.status(HttpStatus.OK).body(memberUseCase.login(login));
+    public ResponseEntity<Boolean> login(@RequestBody LoginRequest login)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        TokenResponse response = memberUseCase.login(login);
+        ResponseEntity<Boolean> responseEntity = ResponseEntity.ok(response.isLogin());
+        responseEntity.getHeaders().setBearerAuth(response.token());
+        return responseEntity;
     }
 }

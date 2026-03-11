@@ -19,6 +19,18 @@ spring:
       mode: always
       schema-locations: classpath:org/springframework/batch/core/schema-postgresql.sql
       continue-on-error: true
+  kafka:
+    enabled: false  # Kafka 자동 시작 비활성화 (Kafka 서버 없을 때 연결 에러 방지)
+
+# 로그 레벨 설정 (로그 출력 양 조절)
+logging:
+  level:
+    root: INFO  # 전체 애플리케이션 기본 로그 레벨
+    org.hibernate.SQL: WARN  # Hibernate SQL 쿼리 로그 숨김 (WARN 이상만 출력)
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN  # SQL 파라미터 바인딩 로그 숨김
+    org.springframework.cloud: WARN  # Spring Cloud (Eureka, Config) 로그 줄임
+    org.apache.kafka: WARN  # Kafka 관련 로그 줄임 (연결 실패 로그 등)
+    com.grepp.jms.greppstudy: INFO  # 우리 애플리케이션 로그는 INFO 레벨로 출력
 
 eureka:
   instance:
@@ -41,10 +53,16 @@ payment:
   toss:
     secret-key: ${TOSS_PAYMENT_SECRET}
 
+# JWT 토큰 생성/검증에 사용할 RSA 키 설정 (.env 파일에서 읽어옴)
+jwt:
+  private-key: ${PRIVATE_KEY}  # JWT 토큰 서명용 개인키
+  public-key: ${PUBLIC_KEY}    # JWT 토큰 검증용 공개키
+
+# Kafka 메시지 큐 설정
 kafka:
-  enabled: true
-  bootstrap-servers: localhost:9092
+  enabled: false  # Kafka 사용 여부 (false = 비활성화)
+  bootstrap-servers: localhost:9092  # Kafka 브로커 주소
   topic:
-    async-orders: async-orders
+    async-orders: async-orders  # 비동기 주문 처리용 토픽 이름
   consumer:
-    group-id: async-sample-group
+    group-id: async-sample-group  # Kafka 컨슈머 그룹 ID

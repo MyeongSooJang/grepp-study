@@ -24,6 +24,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set('springCloudVersion', "2025.1.1")
+}
+
 dependencies {
     //web
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -39,7 +43,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     //security
-    implementation 'org.springframework.security:spring-security-crypto'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     //kafka
     implementation 'org.springframework.kafka:spring-kafka'
     //MSA
@@ -48,9 +52,20 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'//config 정보 연결.
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'//bootstrap.yaml을 읽어와서 먼저 적용하기 위한 라이브러리
 
+    //JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-gson:0.12.3'
+
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {
