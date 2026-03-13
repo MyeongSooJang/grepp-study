@@ -6,7 +6,9 @@ import com.grepp.jms.greppstudy.search.presentation.dto.request.IndexConfigReque
 import com.grepp.jms.greppstudy.search.presentation.dto.request.ProductIndexRequest;
 import com.grepp.jms.greppstudy.search.presentation.dto.response.IndexStatusResponse;
 import com.grepp.jms.greppstudy.search.presentation.dto.response.IndexUpdateResponse;
+import com.grepp.jms.greppstudy.search.presentation.dto.response.ProductFilterAggregationResponse;
 import com.grepp.jms.greppstudy.search.presentation.dto.response.ProductSearchResponse;
+import com.grepp.jms.greppstudy.search.presentation.dto.response.ProductSuggestResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +37,9 @@ public class ProductSearchController {
 
     @Operation(summary = "상품 인덱스 상태 조회", description = "인덱스 존재 여부, 설정, 매핑 정보를 반환합니다. ")
     @GetMapping("/products/index")
-    public IndexStatusResponse getProductIndexStatus() {return searchService.getProductIndexStatus();}
+    public IndexStatusResponse getProductIndexStatus() {
+        return searchService.getProductIndexStatus();
+    }
 
     @Operation(
             summary = "상품 인덱스 설정/매핑 갱신",
@@ -80,6 +84,32 @@ public class ProductSearchController {
     ) {
         Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
         return searchService.searchProducts(keyword, category, pageable);
+    }
+
+    @Operation(
+            summary = "상품 자동완성",
+            description = "입력한 키워드 기준으로 상품명 자동완성 목록을 조회합니다."
+    )
+    @GetMapping("/products/suggest")
+    public ProductSuggestResponse suggestProducts(
+            @Parameter(description = "자동완성 키워드", example = "나이")
+            @RequestParam String keyword,
+            @Parameter(description = "최대 반환 개수", example = "10")
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return searchService.suggestProducts(keyword, size);
+    }
+
+    @Operation(
+            summary = "상품 필터 집계",
+            description = "검색 키워드를 기준으로 브랜드, 카테고리, 가격대별 개수를 반환합니다."
+    )
+    @GetMapping("/products/filters")
+    public ProductFilterAggregationResponse aggregateProductFilters(
+            @Parameter(description = "검색 키워드", example = "운동화")
+            @RequestParam(required = false) String keyword
+    ) {
+        return searchService.aggregateProductFilters(keyword);
     }
 
 }
