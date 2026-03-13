@@ -26,14 +26,13 @@ public class SecurityConfig {
                 .formLogin(FormLoginConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/**").permitAll()
-                                .requestMatchers("/swagger-ui/**").permitAll()
+                        auth.requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/v3/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
-
+                                .requestMatchers("/api/authorizations/**").permitAll()
+                                .anyRequest().permitAll()
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

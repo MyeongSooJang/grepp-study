@@ -24,9 +24,10 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("Backend5 API")
+                        .title("단기 심화 부트캠프5 API")
                         .description("Backend5 Swagger API Docs")
                         .version("v1"))
+                // .servers() 제거 - Swagger가 자동으로 현재 URL 사용
                 .components(new Components().addSecuritySchemes(SECURITY_SCHEME_NAME, securityScheme))
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME));
     }

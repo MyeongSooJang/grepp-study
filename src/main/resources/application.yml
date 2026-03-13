@@ -21,6 +21,8 @@ spring:
       continue-on-error: true
   kafka:
     enabled: false  # Kafka 자동 시작 비활성화 (Kafka 서버 없을 때 연결 에러 방지)
+  elasticsearch:
+    uris: http://localhost:9200
 
 # 로그 레벨 설정 (로그 출력 양 조절)
 logging:
@@ -30,17 +32,25 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: WARN  # SQL 파라미터 바인딩 로그 숨김
     org.springframework.cloud: WARN  # Spring Cloud (Eureka, Config) 로그 줄임
     org.apache.kafka: WARN  # Kafka 관련 로그 줄임 (연결 실패 로그 등)
+    com.netflix.discovery: ERROR  # Eureka 관련 로그 숨김 (ERROR만 출력)
+    com.netflix.eureka: ERROR  # Eureka 관련 로그 숨김
     com.grepp.jms.greppstudy: INFO  # 우리 애플리케이션 로그는 INFO 레벨로 출력
+    org.springframework.data.elasticsearch: DEBUG  # Elasticsearch 쿼리 로그
+    tracer: TRACE  # Elasticsearch 요청/응답 로그
 
 eureka:
-  instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # random port 사용시 eureka server에 인스턴스가 각각 표시되지 않는다
-    preferIpAddress: true # 서비스간 통신 시 hostname 보다 ip 를 우선
   client:
-    register-with-eureka: true # eureka 서버에 등록
-    fetch-registry: true # 외부 검색 가능
-    service-url:
-      defaultZone: http://admin:admin@${eureka.instance.hostname:localhost}:8761/eureka
+    enabled: false  # Eureka Client 완전 비활성화
+
+#eureka:
+#  instance:
+#    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # random port 사용시 eureka server에 인스턴스가 각각 표시되지 않는다
+#    preferIpAddress: true # 서비스간 통신 시 hostname 보다 ip 를 우선
+#  client:
+#    register-with-eureka: true # eureka 서버에 등록
+#    fetch-registry: true # 외부 검색 가능
+#    service-url:
+#      defaultZone: http://admin:admin@${eureka.instance.hostname:localhost}:8761/eureka
 
 springdoc:
   swagger-ui:
@@ -48,6 +58,8 @@ springdoc:
   api-docs:
     path: /v3/api-docs
     version: OPENAPI_3_0
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
 
 payment:
   toss:
@@ -59,10 +71,10 @@ jwt:
   public-key: ${PUBLIC_KEY}    # JWT 토큰 검증용 공개키
 
 # Kafka 메시지 큐 설정
-kafka:
-  enabled: false  # Kafka 사용 여부 (false = 비활성화)
-  bootstrap-servers: localhost:9092  # Kafka 브로커 주소
-  topic:
-    async-orders: async-orders  # 비동기 주문 처리용 토픽 이름
-  consumer:
-    group-id: async-sample-group  # Kafka 컨슈머 그룹 ID
+#kafka:
+#  enabled: false  # Kafka 사용 여부 (false = 비활성화)
+#  bootstrap-servers: localhost:9092  # Kafka 브로커 주소
+#  topic:
+#    async-orders: async-orders  # 비동기 주문 처리용 토픽 이름
+#  consumer:
+#    group-id: async-sample-group  # Kafka 컨슈머 그룹 ID
